@@ -10,12 +10,12 @@
 </head>
 <body>
     <div class="container">
-        <h1>Signup</h1>
+        <h1>Unihelper</h1>
         <form method="POST">
             {% csrf_token %}
             {{ form.as_table }}
-            <button type="submit">Signup</button>
-            <p>Already have an account? <a href="{% url 'login' %}">Log in.</a><p>
+            <button type="submit">Продолжить</button>
+            <p>Уже зарегистрированы? <a href="{% url 'login' %}">Вход.</a><p>
         </form>
     </div>
 </body>

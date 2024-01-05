@@ -11,12 +11,12 @@
 </head>
 <body>
     <div class="container">
-        <h1>Login</h1>
+        <h1>Unihelper</h1>
         <form method="POST">
             {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Login</button>
-            <p>Don't have an account? <a href="{% url 'signup' %}">Create one!</a></p>
+            {{ form.as_table }}
+            <button type="submit">Войти</button>
+            <p>Ещё нет аккаунта? <a href="{% url 'signup' %}">Зарегистрируйтесь!</a></p>
         </form>
     </div>
 </body>
