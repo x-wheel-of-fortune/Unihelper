@@ -1,0 +1,11 @@
+<!-- add_subject.html -->
+ <!-- Replace with your base template -->
+{% extends "main/base.html" %}
+{% block content %}
+<h2>Новое задание</h2>
+<form class=add_new_form method="post" action="{% url 'add_assignment' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Добавить задание</button>
+</form>
+{% endblock %}

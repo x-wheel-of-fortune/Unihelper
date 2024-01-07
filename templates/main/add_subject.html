@@ -1,0 +1,9 @@
+{% extends "main/base.html" %}
+{% block content %}
+    <h2>Новый предмет</h2>
+    <form class=add_new_form method="post" action="{% url 'add_subject' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Добавить предмет</button>
+    </form>
+{% endblock %}

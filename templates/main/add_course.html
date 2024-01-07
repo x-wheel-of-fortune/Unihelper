@@ -1,0 +1,9 @@
+{% extends "main/base.html" %}
+{% block content %}
+    <h2>Новый онлайн курс</h2>
+    <form class=add_new_form method="post" action="{% url 'add_course' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Добавить курс</button>
+    </form>
+{% endblock %}

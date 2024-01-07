@@ -1,0 +1,37 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div class="square-container">
+    <!-- Replace the following with Django template tags to loop through database objects -->
+    {% for subject_with_assignment in subjects_with_assignments %}
+        <div class="square">
+            <form method="POST" action="{% url 'delete_object' model_name='Subjects' obj_id=subject_with_assignment.subj_id %}?next={{ request.path }}">
+                {% csrf_token %}
+                <input class="delete_button" type="submit" value="╳">
+            </form>
+
+
+            <!-- Display object information here -->
+            <h3><a href={{subject_with_assignment.subject_link}}>{{ subject_with_assignment.subject_name }}</a></h3>
+            {% if subject_with_assignment.assignment_name %}
+                <h3><a href={{ subject_with_assignment.assignment_link }}>{{ subject_with_assignment.assignment_name }}</a></h3>
+            {% endif %}
+            {% if subject_with_assignment.deadline %}
+                <h3>Дедлайн: {{ subject_with_assignment.deadline }} дней</h3>
+            {% endif %}
+            <h3>Работы: {{ subject_with_assignment.assignments }}</h3>
+            {% if subject_with_assignment.score %}
+                <h3>Баллы: {{ subject_with_assignment.score }}</h3>
+            {% endif %}
+
+
+        </div>
+    {% endfor %}
+
+    <div class="square">
+        <a href={% url 'add_subject' %}><div class="plus-sign">+</div></a>
+    </div>
+    <!-- Add more squares as needed -->
+</div>
+{% endblock %}
+

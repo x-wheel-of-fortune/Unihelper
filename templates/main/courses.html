@@ -1,0 +1,26 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <div class="square-container">
+    <!-- Replace the following with Django template tags to loop through database objects -->
+    {% for course in courses %}
+        <div class="square">
+            <form method="POST" action="{% url 'delete_object' model_name='OnlineCourses' obj_id=course.id %}?next={{ request.path }}">
+                {% csrf_token %}
+                <input class="delete_button" type="submit" value="╳">
+            </form>
+            <form method="POST" action="{% url 'fulfill_task' model_name='OnlineCourses' obj_id=course.id %}?next={{ request.path }}">
+                {% csrf_token %}
+                <input class="fulfill_button" type="submit" value="V">
+            </form>
+            <!-- Display object information here -->
+            <h3><a href={{course.link}} target="_blank">{{ course.name }}</a></h3>
+            <h3>{{ course.description }}</h3>
+        </div>
+    {% endfor %}
+    <div class="square">
+        <a href={% url 'add_course' %}><div class="plus-sign">+</div></a>
+    </div>
+    <!-- Add more squares as needed -->
+</div>
+{% endblock %}

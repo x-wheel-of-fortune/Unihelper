@@ -1,0 +1,28 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+    <!-- Display assignment information -->
+    <h2> {{ name }}</h2>
+    <p><strong>Статус:</strong> {{ assignment.status.name }}</p>
+
+    {% if assignment.content %}
+        <p><strong>Content:</strong> {{ assignment.content }}</p>
+    {% endif %}
+    {% if assignment.status.name == "Сдано" %}
+        <p><strong>Балл:</strong> {{ assignment.score }}</p>
+        {% if assignment.mark %}
+            <p><strong>Оценка:</strong> {{ assignment.mark }}</p>
+        {% endif %}
+    {% else %}
+        <p><strong>Крайний срок:</strong> {{ assignment.due_date }}</p>
+        <form method="POST" action="{% url 'fulfill_task' model_name='Assignments' obj_id=assignment.id %}?next={{ request.path }}">
+            {% csrf_token %}
+            <input class="big_fulfill_button" type="submit" value="Сдано">
+        </form>
+    {% endif %}
+
+
+
+    <!-- Add additional information as needed -->
+{% endblock %}

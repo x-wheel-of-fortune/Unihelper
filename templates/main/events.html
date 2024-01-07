@@ -1,0 +1,58 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <div class="square-container">
+    <!-- Replace the following with Django template tags to loop through database objects -->
+    {% for event in events %}
+        <div class="square">
+            <form method="POST" action="{% url 'delete_object' model_name='Events' obj_id=event.ev_id %}?next={{ request.path }}">
+                {% csrf_token %}
+                <input class="delete_button" type="submit" value="╳">
+            </form>
+            <form method="POST" action="{% url 'fulfill_task' model_name='Events' obj_id=event.ev_id %}?next={{ request.path }}">
+                {% csrf_token %}
+                <input class="fulfill_button" type="submit" value="V">
+            </form>
+            <!-- Display object information here -->
+            {% if event.name %}
+                {% if event.link %}
+                    <h3><a href={{ event.link }} target="_blank">{{ event.name }}</a></h3>
+                {% else %}
+                    <h3>{{ event.name }}</h3>
+                {% endif %}
+            {% else %}
+                {% if event.link %}
+                    <h3><a href={{ event.link }} target="_blank">{{ event.type }}</a></h3>
+                {% else %}
+                    <h3>{{ event.type }}</h3>
+                {% endif %}
+            {% endif %}
+
+            {% if event.description %}
+                <h3>{{ event.description }}</h3>
+            {% endif %}
+
+            {% if event.prize %}
+                <h3>Приз: {{ event.prize }}</h3>
+            {% endif %}
+
+            {% if event.start %}
+                <h3>Начало: {{ event.start }} дней</h3>
+            {% elif event.end %}
+                <h3>Окончание: {{ event.end }} дней</h3>
+            {% else %}
+                <h3>Завершено</h3>
+            {% endif %}
+
+
+
+
+        </div>
+    {% endfor %}
+    <div class="square">
+        <a href={% url 'add_event' %}><div class="plus-sign">+</div></a>
+    </div>
+    <!-- Add more squares as needed -->
+</div>
+{% endblock %}
+
