@@ -8,6 +8,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class TaskStatuses(models.Model):
     name = models.CharField(blank=False)
 
@@ -40,6 +41,7 @@ class Assignments(models.Model):
     due_date = models.DateTimeField(blank=True, null=True)
     finish_date = models.DateTimeField(blank=True, null=True)
     local_id = models.IntegerField(blank=False)
+
     class Meta:
         managed = False
         db_table = 'assignments'
@@ -50,6 +52,9 @@ class Assignments(models.Model):
 
 class ClassSessionTypes(models.Model):
     name = models.CharField(blank=False)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -79,7 +84,7 @@ class EventTypes(models.Model):
 
 
 class Events(models.Model):
-    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     event_type = models.ForeignKey(EventTypes, models.CASCADE, blank=False)
     start = models.DateTimeField(blank=True, null=True)
     end = models.DateTimeField(blank=True, null=True)
@@ -93,7 +98,8 @@ class Events(models.Model):
     finish_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return self.name if self.name else self.event_type.name+' '+(str(self.start) if self.start else '')
+        return self.name if self.name else self.event_type.name + ' ' + (str(self.start) if self.start else '')
+
     class Meta:
         managed = False
         db_table = 'events'
@@ -103,7 +109,10 @@ class Exams(models.Model):
     subject = models.ForeignKey('Subjects', models.CASCADE, blank=False)
     class_session = models.ForeignKey(ClassSessions, models.CASCADE, blank=True, null=True)
     mark = models.IntegerField(blank=True, null=True)
-    status = models.CharField(blank=True, null=True)
+    status = models.ForeignKey(TaskStatuses, models.CASCADE, blank=False)
+
+    def __str__(self):
+        return self.subject.subject_name + ' экзамен'
 
     class Meta:
         managed = False
@@ -111,22 +120,22 @@ class Exams(models.Model):
 
 
 class OnlineCourses(models.Model):
-    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(blank=False)
     link = models.CharField(blank=False)
     description = models.TextField(blank=True, null=True)
     status = models.ForeignKey(TaskStatuses, models.CASCADE, blank=True, null=True)
     finish_date = models.DateTimeField(blank=True, null=True)
 
+    def __str__(self):
+        return self.name
     class Meta:
         managed = False
         db_table = 'online_courses'
 
 
-
-
 class Subjects(models.Model):
-    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     subject_name = models.CharField(blank=False)
     teacher_name = models.CharField(blank=True, null=True)
     semester = models.IntegerField(blank=False)
@@ -135,7 +144,7 @@ class Subjects(models.Model):
     min_score_for_5 = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return self.subject_name#+"_user_"+str(self.user)
+        return self.subject_name  # +"_user_"+str(self.user)
 
     class Meta:
         managed = False
