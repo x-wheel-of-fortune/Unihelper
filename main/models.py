@@ -144,7 +144,7 @@ class Subjects(models.Model):
     min_score_for_5 = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return self.subject_name  # +"_user_"+str(self.user)
+        return self.subject_name
 
     class Meta:
         managed = False

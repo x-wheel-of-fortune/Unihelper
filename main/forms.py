@@ -3,14 +3,18 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import *
 from django.forms import DateInput
+
+
 class SignupForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'password1', 'password2']
 
+
 class LoginForm(forms.Form):
     username = forms.CharField(label='Имя пользователя')
     password = forms.CharField(widget=forms.PasswordInput, label='Пароль')
+
 
 class SubjectForm(forms.ModelForm):
     class Meta:
@@ -24,6 +28,8 @@ class SubjectForm(forms.ModelForm):
             'min_score_for_4': 'Минимальный балл для оценки 4',
             'min_score_for_5': 'Минимальный балл для оценки 5',
         }
+
+
 class AssignmentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -32,6 +38,7 @@ class AssignmentForm(forms.ModelForm):
         # Filter the queryset of the subject field based on the user
         if user:
             self.fields['subject'].queryset = Subjects.objects.filter(user=user)
+
     class Meta:
         model = Assignments
         fields = ['subject', 'assignment_type', 'local_id', 'status', 'score', 'mark', 'due_date']
@@ -47,6 +54,7 @@ class AssignmentForm(forms.ModelForm):
             'mark': 'Оценка',
             'due_date': 'Срок сдачи',
         }
+
 
 class EventForm(forms.ModelForm):
     class Meta:
@@ -67,6 +75,7 @@ class EventForm(forms.ModelForm):
             'prize': 'Приз',
         }
 
+
 class OnlineCourseForm(forms.ModelForm):
     class Meta:
         model = OnlineCourses
@@ -76,4 +85,3 @@ class OnlineCourseForm(forms.ModelForm):
             'description': 'Описание',
             'link': 'Ссылка',
         }
-

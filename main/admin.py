@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Subjects, ClassSessions, ClassSessionTypes, Assignments, AssignmentTypes, TaskStatuses, Events, EventTypes, Exams, OnlineCourses
+from .models import Subjects, ClassSessions, ClassSessionTypes, Assignments, AssignmentTypes, TaskStatuses, Events, \
+    EventTypes, Exams, OnlineCourses
+
 # Register your models here.
 admin.site.register(Subjects)
 admin.site.register(ClassSessions)
@@ -11,5 +13,3 @@ admin.site.register(Events)
 admin.site.register(EventTypes)
 admin.site.register(Exams)
 admin.site.register(OnlineCourses)
-
-
