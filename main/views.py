@@ -54,11 +54,11 @@ def calculate_score(subject):
     return total_score
 
 
-def get_last_30_days_data():
+def get_last_30_days_data(user):
     start_date = datetime.now() - timedelta(days=30)
 
     data = (Assignments.objects
-            .filter(finish_date__gte=start_date)
+            .filter(finish_date__gte=start_date, subject__user=user)
             .annotate(day=TruncDay('finish_date'))
             .values('day')
             .annotate(count=Count('id'))
@@ -80,7 +80,7 @@ def home(request):
     events = get_events(request.user)
     obj_list = subjects_with_assignments + events
     context['objects'] = sort_objects(obj_list)
-    context['dates'], context['counts'] = get_last_30_days_data()
+    context['dates'], context['counts'] = get_last_30_days_data(request.user)
     return render(request, 'main/home.html', context)
 
 

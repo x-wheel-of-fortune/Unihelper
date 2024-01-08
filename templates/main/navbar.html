@@ -1,11 +1,26 @@
 <!-- navbar.html -->
-<nav>
-    <a href="{% url 'home' %}">Главная</a>
-    <a href="{% url 'university' %}">Университет</a>
-    <a href="{% url 'events' %}">Мероприятия</a>
-    <a href="{% url 'courses' %}">Курсы</a>
-    <div class="user-info">
-        <span>{{ user }}</span>
-        <a href="{% url 'logout' %}">Выход</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-lg">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse text-center" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'home' %}" style="font-size: 26px; color: #fff;">Главная</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'university' %}" style="font-size: 26px; color: #fff;">Университет</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'events' %}" style="font-size: 26px; color: #fff;">Мероприятия</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'courses' %}" style="font-size: 26px; color: #fff;">Курсы</a>
+            </li>
+        </ul>
+        <div class="user-info">
+            <span style="color: #fff;">{{ user }}</span>
+            <a class="btn btn-light" href="{% url 'logout' %}" style="font-size: 16px;">Выход</a>
+        </div>
     </div>
 </nav>

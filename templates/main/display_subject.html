@@ -6,7 +6,9 @@
     <h2>{{ course }} курс, {{ semester }} семестр</h2>
     <h2>Преподаватель: {{ subject.teacher_name }}</h2>
     <h2>Работы: {{ assignments_score }}</h2>
-    <h2>Баллы: {{ score }}</h2>
+    {% if score %}
+        <h2>Баллы: {{ score }}</h2>
+    {% endif %}
 
     <div class="square-container">
     <!-- Display assignments in squares -->
@@ -21,7 +23,9 @@
 
 
             <h3><a href={{ link }}>{{ assignment.assignment_type }} {{ assignment.local_id }}</a></h3>
-            <p>Баллы: {{ assignment.score }}</p>
+            {% if assignment.score %}
+                <p>Баллы: {{ assignment.score }}</p>
+            {% endif %}
             <h3>{{ assignment.status.name}}</h3>
             {% if assignment.status.name != "Сдано" %}
                 <form method="POST" action="{% url 'fulfill_task' model_name='Assignments' obj_id=assignment.id %}?next={{ request.path }}">

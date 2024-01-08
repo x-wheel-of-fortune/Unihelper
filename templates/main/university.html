@@ -13,23 +13,35 @@
 
             <!-- Display object information here -->
             <h3><a href={{subject_with_assignment.subject_link}}>{{ subject_with_assignment.subject_name }}</a></h3>
+            {% if subject_with_assignment.score %}
+                <h3>Баллы: {{ subject_with_assignment.score }}</h3>
+            {% endif %}
+            <h3>Работы: {{ subject_with_assignment.assignments }}</h3>
+
             {% if subject_with_assignment.assignment_name %}
                 <h3><a href={{ subject_with_assignment.assignment_link }}>{{ subject_with_assignment.assignment_name }}</a></h3>
             {% endif %}
             {% if subject_with_assignment.deadline %}
-                <h3>Дедлайн: {{ subject_with_assignment.deadline }} дней</h3>
+                {% if subject_with_assignment.deadline == 0 %}
+                    <h3>Дедлайн: <span style="color: red;">сегодня</span></h3>
+                {% elif subject_with_assignment.deadline == 1 %}
+                    <h3>Дедлайн: <span style="color: red;">1 день</span></h3>
+                {% elif subject_with_assignment.deadline < 4 %}
+                    <h3>Дедлайн: <span style="color: red;">{{ subject_with_assignment.deadline }} дня</span></h3>
+                {% elif subject_with_assignment.deadline < 7 %}
+                    <h3>Дедлайн: <span style="color: orange;">{{ subject_with_assignment.deadline }} дней</span></h3>
+                {% else %}
+                    <h3>Дедлайн: <span style="color: limegreen;">{{ subject_with_assignment.deadline }} дней</span></h3>
+                {% endif %}
             {% endif %}
-            <h3>Работы: {{ subject_with_assignment.assignments }}</h3>
-            {% if subject_with_assignment.score %}
-                <h3>Баллы: {{ subject_with_assignment.score }}</h3>
-            {% endif %}
+
 
 
         </div>
     {% endfor %}
 
     <div class="square">
-        <a href={% url 'add_subject' %}><div class="plus-sign">+</div></a>
+        <a class="text-decoration-none" href={% url 'add_subject' %}><div class="plus-sign ">+</div></a>
     </div>
     <!-- Add more squares as needed -->
 </div>

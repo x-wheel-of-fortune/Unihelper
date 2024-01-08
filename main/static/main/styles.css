@@ -1,57 +1,59 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-}
+.nav-item {
+        width: 200px;
+        margin: 5px;
+        font-weight: bold;
+        font-size: 1px;
+    }
 
-nav {
-    background-color: #4caf50;
-    padding: 30px;
-    text-align: center;
-    position: relative;
-}
+.navbar-nav .nav-link:hover {
+        background-color: #26b01d; /* Updated hover background color */
+        color: #fff !important; /* Text color on hover */
+        box-shadow: 0 0 10px rgb(15, 145, 4); /* Subtle box-shadow effect on hover */
+        border-radius: 5px;
+    }
 
-nav a {
-    color: white;
-    text-decoration: none;
-    padding: 10px;
-    margin: 0 0px;
-    font-size: 25px;
-    display: inline-block;
-    width: 10%;
-
-}
-
-nav a:hover {
-    background-color: #45a049;
-    color: white;
-}
-
-.user-info {
-    swidth: 25px; /* Adjust the width as needed */
-    sheight: 25px; /* Adjust the height as needed */
-    position: absolute;
-    top: 25px;
-    right: 50px;
-    text-align: center;
-    sline-height: 20px; /* Should be the same as the height */
-    padding: 0; /* Reset padding */
-    margin: 10; /* Reset margin */
-
-    color: white; /* Example text color */
-    border: none;
-    cursor: pointer;
-}
 .user-info span {
-    margin-left: 18px;
-}
+        color: #fff;
+
+    }
+
 .user-info a {
     text-align: center;
     font-size: 16px;
     display: block;
     width: 100%;
+    margin-top: 5px ;
 }
+
+/*body {*/
+/*    font-family: Arial, sans-serif;*/
+/*    background-color: #f4f4f4;*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*}*/
+
+/*!*nav {*!*/
+/*!*    background-color: #4caf50;*!*/
+/*!*    padding: 30px;*!*/
+/*!*    text-align: center;*!*/
+/*!*    position: relative;*!*/
+/*!*}*!*/
+
+/*!*nav a {*!*/
+/*!*    color: white;*!*/
+/*!*    text-decoration: none;*!*/
+/*!*    padding: 10px;*!*/
+/*!*    margin: 0 0px;*!*/
+/*!*    font-size: 25px;*!*/
+/*!*    display: inline-block;*!*/
+/*!*    width: 10%;*!*/
+
+/*!*}*!*/
+
+/*!*nav a:hover {*!*/
+/*!*    background-color: #45a049;*!*/
+/*!*    color: white;*!*/
+/*!*}*!*/
 
 .square-container {
     display: flex;
@@ -75,11 +77,24 @@ nav a:hover {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    transition: transform 0.3s ease-in-out;
+    border-radius: 8px;
+}
+
+.square:hover {
+    transform: scale(1.02);
 }
 
 .plus-sign {
     font-size: 192px;
     color: #45a049;
+    cursor: pointer;
+    margin-bottom: 15%;
+}
+
+.square a.plus-sign,
+.square a.plus-sign:hover {
+    text-decoration: none;
 }
 
 .content {
@@ -105,6 +120,10 @@ h2 {
     text-align: center;
 }
 
+h3 {
+    color: #4f4e4e;
+}
+
 p {
     text-align: center;
 }
@@ -115,16 +134,52 @@ form {
     align-items: center;
 }
 
+
+
 .add_new_form {
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 30%;
-    background-color: white;
-    border-radius: 20px;
-    border-width: 1px;
-    border-style: solid;
-    margin: auto; /* Center the form */
+    width: 60%;
+    max-width: 400px; /* Adjust the maximum width as needed */
+    background-color: #f8f9fa; /* Bootstrap-like background color */
+    border: 1px solid #dee2e6; /* Bootstrap-like border */
+    border-radius: 10px;
+    margin: auto;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Subtle box shadow for a modern look */
+}
+
+.add_new_form label {
+    margin-bottom: 8px;
+}
+
+.add_new_form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ced4da; /* Bootstrap-like border color */
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+
+
+.add_new_form button {
+    width: 100%;
+    background-color: #45a049; /* Bootstrap-like button color */
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.add_new_form button:hover {
+    background-color: #4db451; /* Darker color on hover */
 }
 
 label {
@@ -144,7 +199,7 @@ input {
 
 
 button {
-    width: 30%;
+    width: auto;
     background-color: #4caf50;
     color: white;
     padding: 10px;
@@ -153,13 +208,13 @@ button {
     cursor: pointer;
     margin: 10px;
     font-weight: 700;
-    font-size: 16px;
+    font-size: 23px;
 }
 
 .delete_button
 {
-    width: 25px; /* Adjust the width as needed */
-    height: 25px; /* Adjust the height as needed */
+    width: 40px; /* Adjust the width as needed */
+    height: 40px; /* Adjust the height as needed */
     position: absolute;
     top: 5px;
     right: 5px;
@@ -167,16 +222,17 @@ button {
     line-height: 20px; /* Should be the same as the height */
     padding: 0; /* Reset padding */
     margin: 0; /* Reset margin */
-
+    background: rgb(231, 73, 73);
     color: black; /* Example text color */
     border: none;
     cursor: pointer;
+    border-radius: 20%;
 }
 
 .fulfill_button
 {
-    width: 25px; /* Adjust the width as needed */
-    height: 25px; /* Adjust the height as needed */
+    width: 40px; /* Adjust the width as needed */
+    height: 40px; /* Adjust the height as needed */
     position: absolute;
     top: 5px;
     left: 5px;
@@ -184,10 +240,11 @@ button {
     line-height: 20px; /* Should be the same as the height */
     padding: 0; /* Reset padding */
     margin: 0; /* Reset margin */
-
+    background: rgb(70, 206, 80);
     color: black; /* Example text color */
     border: none;
     cursor: pointer;
+    border-radius: 20%;
 }
 
 .big_fulfill_button
@@ -242,24 +299,16 @@ a:hover {
     cursor: pointer;
     margin: 10px 0; /* Apply margin only to top and bottom */
     font-weight: 700;
-    font-size: 16px;
+    font-size: 23px;
 }
-
-
-/*.chart {*/
-/*    text-align: center;*/
-/*    width: 50%;*/
-/*    margin: auto;*/
-/*    margin-top: 50px;*/
-/*    padding-bottom: 200px;*/
-/*}*/
 
 
 .chartMenu {
         width: 100vw;
         height: auto;
         margin: auto;
-        color: black;
+        color: #4f4e4e;;
+        margin-top: 100px;
       }
       .chartMenu p {
         padding: 10px;
