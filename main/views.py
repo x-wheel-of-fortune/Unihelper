@@ -11,6 +11,41 @@ from datetime import datetime, timedelta
 from django.db.models import F, Count
 import json
 from django.db.models.functions import TruncMonth, TruncDay
+
+from django.http import FileResponse
+import io
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
+
+
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+
+# Register the font (only need to do this once in your script)
+pdfmetrics.registerFont(TTFont('DejaVuSans', 'DejaVuSans.ttf'))
+
+def generate_report(request):
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf, pagesize=letter, bottomup=0)
+    text_object = c.beginText()
+    text_object.setTextOrigin(inch, inch)
+    text_object.setFont("DejaVuSans", 14)  # Use the registered font
+
+    lines = [
+        f"Количетсво сданных заданий: {Assignments.objects.filter(subject__user=request.user, status__name='Сдано').count()}/{Assignments.objects.filter(subject__user=request.user).count()}",
+    ]
+
+    for line in lines:
+        text_object.textLine(line)
+
+    c.drawText(text_object)
+    c.showPage()
+    c.save()
+    buf.seek(0)
+
+    return FileResponse(buf, as_attachment=True, filename='report.pdf')
+
 def calculate_score(subject):
     assignments = Assignments.objects.filter(subject=subject)
     total_score = 0

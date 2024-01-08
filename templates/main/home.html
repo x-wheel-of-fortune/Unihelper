@@ -213,4 +213,14 @@
         );
 
     </script>
+
+    <button id="downloadPdfBtn" style="display: block; margin-left: 37%; margin-top: 30px;">Download PDF Report</button>
+
+    <script>
+        // Add a JavaScript function to handle button click
+        document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+            // Send a request to the Django view to generate and download the PDF report
+            window.location.href = '/pdf_report/';
+        });
+    </script>
 {% endblock %}
