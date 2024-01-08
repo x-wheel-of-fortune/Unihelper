@@ -7,7 +7,9 @@ from .models import Subjects, Assignments, Events, OnlineCourses
 from django.utils import timezone
 from operator import itemgetter
 from django.apps import apps
-
+from datetime import datetime, timedelta
+from django.db.models import F, Count
+import json
 
 def calculate_score(subject):
     assignments = Assignments.objects.filter(subject=subject)
@@ -22,7 +24,8 @@ def calculate_score(subject):
 @login_required(login_url='login')
 def home(request):
     context = {'user': request.user}
-
+    subjs = []
+    float_scores = []
     subjects_with_assignments = []
     subjects = Subjects.objects.filter(user=request.user)
     for subject in subjects:
@@ -40,12 +43,18 @@ def home(request):
                 'teacher_name': subject.teacher_name,
                 'assignments': f"{Assignments.objects.filter(subject=subject, status=2).count()}/{Assignments.objects.filter(subject=subject).count()}",
                 'score': f"{calculate_score(subject)}/{subject.min_score_for_5}" if subject.min_score_for_5 else None,
+                'float_score': calculate_score(subject) / subject.min_score_for_5 if subject.min_score_for_5 else 1,
+
                 'subject_link': f"/subject/{subject.id}",
                 'assignment_link': f"/subject/{subject.id}/assignment/{next_assignment.id}",
 
             }
             subjects_with_assignments.append(subject_with_assignment)
-
+        if subject.min_score_for_5:
+            subjs.append(subject.subject_name)
+            float_scores.append(calculate_score(subject) / subject.min_score_for_5)
+    context['subjs'] = subjs
+    context['float_scores'] = float_scores
     events = []
     evs = Events.objects.filter(user=request.user)
     for event in evs:
@@ -75,6 +84,21 @@ def home(request):
 
     sorted_obj_list = sorted(obj_list, key=lambda x: get_sort_key(x))
     context['objects'] = sorted_obj_list
+
+    # Get the date 30 days ago
+    start_date = datetime.now() - timedelta(days=30)
+
+    # Get the count of fulfilled assignments for each day
+    data = Assignments.objects.filter(finish_date__gte=start_date).annotate(date=F('finish_date')).values(
+        'date').annotate(count=Count('id')).order_by('date')
+
+    # Separate the dates and counts into two lists
+    dates = json.dumps([item['date'].isoformat() for item in data])
+    counts = [item['count'] for item in data]
+    print(dates, counts)
+    context['dates'] = dates
+    context['counts'] = counts
+
     return render(request, 'main/home.html', context)
 
 
@@ -98,6 +122,7 @@ def university(request):
                 'teacher_name': subject.teacher_name,
                 'assignments': f"{Assignments.objects.filter(subject=subject, status=2).count()}/{Assignments.objects.filter(subject=subject).count()}",
                 'score': f"{calculate_score(subject)}/{subject.min_score_for_5}" if subject.min_score_for_5 else None,
+                'float_score': calculate_score(subject) / subject.min_score_for_5 if subject.min_score_for_5 else 1,
                 'subject_link': f"/subject/{subject.id}",
                 'assignment_link': f"/subject/{subject.id}/assignment/{next_assignment.id}",
             }
@@ -110,6 +135,7 @@ def university(request):
                 'teacher_name': subject.teacher_name,
                 'assignments': f"{Assignments.objects.filter(subject=subject, status=2).count()}/{Assignments.objects.filter(subject=subject).count()}",
                 'score': f"{calculate_score(subject)}/{subject.min_score_for_5}" if subject.min_score_for_5 else None,
+                'float_score': calculate_score(subject) / subject.min_score_for_5 if subject.min_score_for_5 else 1,
                 'subject_link': f"/subject/{subject.id}",
             }
         subjects_with_assignments.append(subject_with_assignment)
@@ -302,6 +328,7 @@ def fulfill_task(request, model_name, obj_id):
 
     obj = get_object_or_404(model_class, id=obj_id)
     obj.status = get_object_or_404(TaskStatuses, id=2)
+    obj.finish_date = timezone.now()
     obj.save()
 
     # Redirect to the URL specified in the 'next' query parameter

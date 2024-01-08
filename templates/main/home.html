@@ -2,98 +2,165 @@
 
 {% block content %}
     <div class="square-container">
-    <!-- Replace the following with Django template tags to loop through database objects -->
-    {% for object in objects %}
+        <!-- Replace the following with Django template tags to loop through database objects -->
+        {% for object in objects %}
+            <div class="square">
+                <form method="POST"
+                      action="{% url 'delete_object' model_name=object.obj_type obj_id=object.id %}?next={{ request.path }}">
+                    {% csrf_token %}
+                    <input class="delete_button" type="submit" value="╳">
+                </form>
+                <!-- Display object information here -->
+                {% if object.obj_type == 'Subjects' %}
+                    <h3><a href={{ object.subject_link }}>{{ object.subject_name }}</a></h3>
+                    <h3><a href={{ object.assignment_link }}>{{ object.assignment_name }}</a></h3>
+                    <form method="POST"
+                          action="{% url 'fulfill_task' model_name='Assignments' obj_id=object.assignment_id %}?next={{ request.path }}">
+                        {% csrf_token %}
+                        <input class="fulfill_button" type="submit" value="V">
+                    </form>
+                    {% if object.deadline %}
+                        <h3>Дедлайн: {{ object.deadline }} дней</h3>
+                    {% endif %}
+                    <h3>Работы: {{ object.assignments }}</h3>
+                    {% if object.score %}
+                        <h3>Баллы: {{ object.score }}</h3>
+                    {% endif %}
+                {% elif object.obj_type == 'Events' %}
+                    <form method="POST"
+                          action="{% url 'fulfill_task' model_name='Events' obj_id=object.id %}?next={{ request.path }}">
+                        {% csrf_token %}
+                        <input class="fulfill_button" type="submit" value="V">
+                    </form>
+                    {% if object.name %}
+                        {% if object.link %}
+                            <h3><a href={{ object.link }} target="_blank">{{ object.name }}</a></h3>
+                        {% else %}
+                            <h3>{{ object.name }}</h3>
+                        {% endif %}
+                    {% else %}
+                        {% if object.link %}
+                            <h3><a href={{ object.link }} target="_blank">{{ object.type }}</a></h3>
+                        {% else %}
+                            <h3>{{ object.type }}</h3>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if object.description %}
+                        <h3>{{ object.description }}</h3>
+                    {% endif %}
+
+                    {% if object.prize %}
+                        <h3>Приз: {{ object.prize }}</h3>
+                    {% endif %}
+
+                    {% if object.start %}
+                        <h3>Начало: {{ object.start }} дней</h3>
+                    {% elif object.end %}
+                        <h3>Окончание: {{ object.end }} дней</h3>
+                    {% else %}
+                        <h3>Завершено</h3>
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% endfor %}
+
         <div class="square">
-            <form method="POST" action="{% url 'delete_object' model_name=object.obj_type obj_id=object.id %}?next={{ request.path }}">
-                {% csrf_token %}
-                <input class="delete_button" type="submit" value="╳">
-            </form>
-            <!-- Display object information here -->
-            {% if object.obj_type == 'Subjects' %}
-                <h3><a href={{ object.subject_link }}>{{ object.subject_name }}</a></h3>
-                <h3><a href={{ object.assignment_link }}>{{ object.assignment_name }}</a></h3>
-                <form method="POST" action="{% url 'fulfill_task' model_name='Assignments' obj_id=object.assignment_id %}?next={{ request.path }}">
-                    {% csrf_token %}
-                    <input class="fulfill_button" type="submit" value="V">
-                </form>
-                {% if object.deadline %}
-                    <h3>Дедлайн: {{ object.deadline }} дней</h3>
-                {% endif %}
-                <h3>Работы: {{ object.assignments }}</h3>
-                {% if object.score %}
-                    <h3>Баллы: {{ object.score }}</h3>
-                {% endif %}
-            {% elif object.obj_type == 'Events' %}
-                <form method="POST" action="{% url 'fulfill_task' model_name='Events' obj_id=object.id %}?next={{ request.path }}">
-                    {% csrf_token %}
-                    <input class="fulfill_button" type="submit" value="V">
-                </form>
-                {% if object.name %}
-                    {% if object.link %}
-                        <h3><a href={{ object.link }} target="_blank">{{ object.name }}</a></h3>
-                    {% else %}
-                        <h3>{{ object.name }}</h3>
-                    {% endif %}
-                {% else %}
-                    {% if object.link %}
-                        <h3><a href={{ object.link }} target="_blank">{{ object.type }}</a></h3>
-                    {% else %}
-                        <h3>{{ object.type }}</h3>
-                    {% endif %}
-                {% endif %}
-
-                {% if object.description %}
-                <h3>{{ object.description }}</h3>
-                {% endif %}
-    
-                {% if object.prize %}
-                    <h3>Приз: {{ object.prize }}</h3>
-                {% endif %}
-    
-                {% if object.start %}
-                    <h3>Начало: {{ object.start }} дней</h3>
-                {% elif object.end %}
-                    <h3>Окончание: {{ object.end }} дней</h3>
-                {% else %}
-                    <h3>Завершено</h3>
-                {% endif %}
-            {% endif %}
+            <div id="clickableObject" class="plus-sign">+</div>
         </div>
-    {% endfor %}
 
-    <div class="square">
-        <div id="clickableObject" class="plus-sign">+</div>
+        <div id="panel" class="panel">
+            <button class="add_button" id="button1">Задание</button>
+            <button class="add_button" id="button2">Мероприятие</button>
+        </div>
+
+        <script>
+            document.getElementById('clickableObject').addEventListener('click', function () {
+                document.getElementById('panel').style.display = 'block';
+            });
+
+            document.getElementById('button1').addEventListener('click', function () {
+                window.location.href = {% url 'add_assignment' %};
+            });
+
+            document.getElementById('button2').addEventListener('click', function () {
+                window.location.href = {% url 'add_event' %};
+            });
+            // Close the panel when clicking outside of it
+            document.addEventListener('click', function (event) {
+                var panel = document.getElementById('panel');
+                var clickableObject = document.getElementById('clickableObject');
+
+                // Check if the click target is a descendant of the panel
+                if (!panel.contains(event.target) && event.target !== clickableObject) {
+                    panel.style.display = 'none';
+                }
+            });
+        </script>
+        <!-- Add more squares as needed -->
+    </div>
+    <div class="chart">
+        <h2>Доля выполненных заданий</h2>
+        <canvas id="myChart"></canvas>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{ subjs|safe }}, // Replace with your subjects
+                    datasets: [{
+                        label: 'Доля выполненных заданий',
+                        data: {{ float_scores|safe }}, // Replace with your percentages
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            suggestedMax: 1
+                        }
+                    }
+                }
+            });
+        </script>
     </div>
 
-    <div id="panel" class="panel">
-        <button class="add_button" id="button1">Задание</button>
-        <button class="add_button" id="button2">Мероприятие</button>
+    <div class="chart">
+        <h2>Количество сданных работ по дням</h2>
+        <canvas id="myChart2"></canvas>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            var ctx = document.getElementById('myChart2').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{ dates|safe }}, // Replace with your subjects
+                    datasets: [{
+                        label: 'Работы',
+                        data: {{ counts|safe }}, // Replace with your percentages
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                parser: 'YYYY-MM-DDTHH:mm:ss.SSSSSS',
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                        }
+                    }
+                }
+            });
+        </script>
     </div>
 
-    <script>
-        document.getElementById('clickableObject').addEventListener('click', function() {
-            document.getElementById('panel').style.display = 'block';
-        });
-
-        document.getElementById('button1').addEventListener('click', function() {
-            window.location.href = {% url 'add_assignment' %};
-        });
-
-        document.getElementById('button2').addEventListener('click', function() {
-            window.location.href = {% url 'add_event' %};
-        });
-        // Close the panel when clicking outside of it
-        document.addEventListener('click', function(event) {
-            var panel = document.getElementById('panel');
-            var clickableObject = document.getElementById('clickableObject');
-
-            // Check if the click target is a descendant of the panel
-            if (!panel.contains(event.target) && event.target !== clickableObject) {
-                panel.style.display = 'none';
-            }
-        });
-    </script>
-    <!-- Add more squares as needed -->
-</div>
 {% endblock %}

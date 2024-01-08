@@ -38,6 +38,7 @@ class Assignments(models.Model):
     score = models.IntegerField(blank=True, null=True)
     mark = models.IntegerField(blank=True, null=True)
     due_date = models.DateTimeField(blank=True, null=True)
+    finish_date = models.DateTimeField(blank=True, null=True)
     local_id = models.IntegerField(blank=False)
     class Meta:
         managed = False
@@ -89,6 +90,7 @@ class Events(models.Model):
     prize = models.CharField(blank=True, null=True)
     name = models.CharField(blank=False)
     status = models.ForeignKey(TaskStatuses, models.CASCADE, blank=False)
+    finish_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.name if self.name else self.event_type.name+' '+(str(self.start) if self.start else '')
@@ -114,6 +116,7 @@ class OnlineCourses(models.Model):
     link = models.CharField(blank=False)
     description = models.TextField(blank=True, null=True)
     status = models.ForeignKey(TaskStatuses, models.CASCADE, blank=True, null=True)
+    finish_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         managed = False

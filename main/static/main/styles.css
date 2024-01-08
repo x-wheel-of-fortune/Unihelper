@@ -9,6 +9,7 @@ nav {
     background-color: #4caf50;
     padding: 30px;
     text-align: center;
+    position: relative;
 }
 
 nav a {
@@ -17,6 +18,9 @@ nav a {
     padding: 10px;
     margin: 0 0px;
     font-size: 25px;
+    display: inline-block;
+    width: 10%;
+
 }
 
 nav a:hover {
@@ -25,14 +29,28 @@ nav a:hover {
 }
 
 .user-info {
-    float: right;
-    color: white;
-    font-size: 16px;
-}
+    swidth: 25px; /* Adjust the width as needed */
+    sheight: 25px; /* Adjust the height as needed */
+    position: absolute;
+    top: 25px;
+    right: 50px;
+    text-align: center;
+    sline-height: 20px; /* Should be the same as the height */
+    padding: 0; /* Reset padding */
+    margin: 10; /* Reset margin */
 
+    color: white; /* Example text color */
+    border: none;
+    cursor: pointer;
+}
+.user-info span {
+    margin-left: 18px;
+}
 .user-info a {
+    text-align: center;
     font-size: 16px;
     display: block;
+    width: 100%;
 }
 
 .square-container {
@@ -227,4 +245,12 @@ a:hover {
     font-size: 16px;
 }
 
+
+.chart {
+    text-align: center;
+    width: 50%;
+    margin: auto;
+    margin-top: 50px;
+    padding-bottom: 200px;
+}
 
