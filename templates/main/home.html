@@ -99,68 +99,118 @@
         </script>
         <!-- Add more squares as needed -->
     </div>
-    <div class="chart">
+
+    <div class="chartMenu">
         <h2>Доля выполненных заданий</h2>
-        <canvas id="myChart"></canvas>
+    </div>
+    <div class="chartCard">
+        <div class="chartBox">
+            <canvas id="myChart1"></canvas>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+    <script>
+        // setup
+        const data = {
+            labels:  {{ subjs|safe }},
+            datasets: [{
+                label: 'Доля выполненных заданий',
+                data: {{ float_scores|safe }},
+                backgroundColor: [
+                    'rgba(255, 26, 104, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(0, 0, 0, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 26, 104, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(0, 0, 0, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
 
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            var ctx = document.getElementById('myChart').getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: {{ subjs|safe }}, // Replace with your subjects
-                    datasets: [{
-                        label: 'Доля выполненных заданий',
-                        data: {{ float_scores|safe }}, // Replace with your percentages
-                        borderWidth: 1
-                    }]
+        // config
+        const config = {
+            type: 'bar',
+            data,
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    }
                 },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            suggestedMax: 1
-                        }
+                scales: {
+                    y: {
+                        suggestedMax: 1,
+                        beginAtZero: true
                     }
                 }
-            });
-        </script>
+            }
+        };
+
+        // render init block
+        const myChart = new Chart(
+            document.getElementById('myChart1'),
+            config
+        );
+    </script>
+
+
+    <div class="chartMenu">
+        <h2>Активность сдачи работ за 30 дней</h2>
     </div>
+    <div class="chartCard">
+        <div class="chartBox">
+            <canvas id="myChart2"></canvas>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+    <script>
+        // setup
+        const data2 = {
+            labels:  {{ dates|safe }},
+            datasets: [{
+                label: 'Сдано работ',
+                data: {{ counts|safe }},
+                borderWidth: 1
+            }]
+        };
 
-    <div class="chart">
-        <h2>Количество сданных работ по дням</h2>
-        <canvas id="myChart2"></canvas>
-
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            var ctx = document.getElementById('myChart2').getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: {{ dates|safe }}, // Replace with your subjects
-                    datasets: [{
-                        label: 'Работы',
-                        data: {{ counts|safe }}, // Replace with your percentages
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        x: {
-                            type: 'time',
-                            time: {
-                                unit: 'day',
-                                parser: 'YYYY-MM-DDTHH:mm:ss.SSSSSS',
+        // config
+        const config2 = {
+            type: 'line',
+            data: data2,
+            options: {
+                scales: {
+                    y: {
+                        suggestedMax: 4,
+                        ticks: {
+                            beginAtZero: true,
+                            callback: function (value) {
+                                if (value % 1 === 0) {
+                                    return value;
+                                }
                             }
-                        },
-                        y: {
-                            beginAtZero: true,
                         }
                     }
                 }
-            });
-        </script>
-    </div>
+            }
+        };
 
+        // render init block
+        const myChart1 = new Chart(
+            document.getElementById('myChart2'),
+            config2
+        );
+
+    </script>
 {% endblock %}

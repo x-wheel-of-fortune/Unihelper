@@ -10,7 +10,7 @@ from django.apps import apps
 from datetime import datetime, timedelta
 from django.db.models import F, Count
 import json
-
+from django.db.models.functions import TruncMonth, TruncDay
 def calculate_score(subject):
     assignments = Assignments.objects.filter(subject=subject)
     total_score = 0
@@ -19,6 +19,28 @@ def calculate_score(subject):
             total_score += assignment.score if assignment.score else 0
     return total_score
 
+
+def get_last_30_days_data():
+    # Calculate the start date (30 days ago from now)
+    start_date = datetime.now() - timedelta(days=30)
+
+    # Get the count of fulfilled assignments for each day in the last 30 days
+    data = (Assignments.objects
+            .filter(finish_date__gte=start_date)
+            .annotate(day=TruncDay('finish_date'))
+            .values('day')
+            .annotate(count=Count('id'))
+            .values('day', 'count')
+            )
+
+    # Create a dictionary to store counts for each day
+    count_dict = {item['day'].strftime('%d.%m'): item['count'] for item in data}
+    print(f"count_dict: {count_dict}")
+    # Create a list of the last 30 days with counts (filling missing days with count 0)
+    last_30_days = [(start_date + timedelta(days=i)).strftime('%d.%m') for i in range(31)]
+    counts = [count_dict.get(day, 0) for day in last_30_days]
+
+    return last_30_days, counts
 
 # Create your views here.
 @login_required(login_url='login')
@@ -93,8 +115,7 @@ def home(request):
         'date').annotate(count=Count('id')).order_by('date')
 
     # Separate the dates and counts into two lists
-    dates = json.dumps([item['date'].isoformat() for item in data])
-    counts = [item['count'] for item in data]
+    dates, counts = get_last_30_days_data()
     print(dates, counts)
     context['dates'] = dates
     context['counts'] = counts

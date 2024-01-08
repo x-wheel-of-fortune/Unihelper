@@ -246,11 +246,36 @@ a:hover {
 }
 
 
-.chart {
-    text-align: center;
-    width: 50%;
-    margin: auto;
-    margin-top: 50px;
-    padding-bottom: 200px;
-}
+/*.chart {*/
+/*    text-align: center;*/
+/*    width: 50%;*/
+/*    margin: auto;*/
+/*    margin-top: 50px;*/
+/*    padding-bottom: 200px;*/
+/*}*/
 
+
+.chartMenu {
+        width: 100vw;
+        height: auto;
+        margin: auto;
+        color: black;
+      }
+      .chartMenu p {
+        padding: 10px;
+        font-size: 20px;
+      }
+      .chartCard {
+        width: 100vw;
+        height: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .chartBox {
+        width: 700px;
+        padding: 20px;
+        border-radius: 20px;
+        border: solid 3px rgb(11, 143, 0);
+        background: white;
+      }
