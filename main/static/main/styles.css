@@ -1,28 +1,32 @@
+body {
+    overflow-x: hidden; /* Hide scrollbars */
+}
+
 .nav-item {
-        width: 200px;
-        margin: 5px;
-        font-weight: bold;
-        font-size: 1px;
-    }
+    width: 200px;
+    margin: 5px;
+    font-weight: bold;
+    font-size: 1px;
+}
 
 .navbar-nav .nav-link:hover {
-        background-color: #26b01d; /* Updated hover background color */
-        color: #fff !important; /* Text color on hover */
-        box-shadow: 0 0 10px rgb(15, 145, 4); /* Subtle box-shadow effect on hover */
-        border-radius: 5px;
-    }
+    background-color: #26b01d; /* Updated hover background color */
+    color: #fff !important; /* Text color on hover */
+    box-shadow: 0 0 10px rgb(15, 145, 4); /* Subtle box-shadow effect on hover */
+    border-radius: 5px;
+}
 
 .user-info span {
-        color: #fff;
+    color: #fff;
 
-    }
+}
 
 .user-info a {
     text-align: center;
     font-size: 16px;
     display: block;
     width: 100%;
-    margin-top: 5px ;
+    margin-top: 5px;
 }
 
 /*body {*/
@@ -135,7 +139,6 @@ form {
 }
 
 
-
 .add_new_form {
     padding: 20px;
     display: flex;
@@ -163,7 +166,6 @@ form {
     box-sizing: border-box;
     font-size: 16px;
 }
-
 
 
 .add_new_form button {
@@ -197,7 +199,6 @@ input {
 }
 
 
-
 button {
     width: auto;
     background-color: #4caf50;
@@ -211,15 +212,13 @@ button {
     font-size: 23px;
 }
 
-.delete_button
-{
+.delete_button {
     width: 40px; /* Adjust the width as needed */
     height: 40px; /* Adjust the height as needed */
     position: absolute;
     top: 5px;
     right: 5px;
     text-align: center;
-    line-height: 20px; /* Should be the same as the height */
     padding: 0; /* Reset padding */
     margin: 0; /* Reset margin */
     background: rgb(231, 73, 73);
@@ -227,10 +226,12 @@ button {
     border: none;
     cursor: pointer;
     border-radius: 20%;
+    font-size: 22px;
+    font-weight: bold;
+
 }
 
-.fulfill_button
-{
+.fulfill_button {
     width: 40px; /* Adjust the width as needed */
     height: 40px; /* Adjust the height as needed */
     position: absolute;
@@ -245,10 +246,10 @@ button {
     border: none;
     cursor: pointer;
     border-radius: 20%;
+    font-size: 26px;
 }
 
-.big_fulfill_button
-{
+.big_fulfill_button {
     width: 200px; /* Adjust the width as needed */
     height: 50px; /* Adjust the height as needed */
     text-align: center;
@@ -302,29 +303,37 @@ a:hover {
     font-size: 23px;
 }
 
+.chart {
+    margin-top: 40px;
+    display: inline-block;
+    width: 49%;
+}
 
 .chartMenu {
-        width: 100vw;
-        height: auto;
-        margin: auto;
-        color: #4f4e4e;;
-        margin-top: 100px;
-      }
-      .chartMenu p {
-        padding: 10px;
-        font-size: 20px;
-      }
-      .chartCard {
-        width: 100vw;
-        height: auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .chartBox {
-        width: 700px;
-        padding: 20px;
-        border-radius: 20px;
-        border: solid 3px rgb(11, 143, 0);
-        background: white;
-      }
+    width: auto;
+    height: auto;
+    margin: auto;
+    color: #4f4e4e;
+    margin-top: auto;
+}
+
+.chartMenu p {
+    padding: 10px;
+    font-size: 20px;
+}
+
+.chartCard {
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chartBox {
+    width: 95%;
+    padding: 20px;
+    border-radius: 20px;
+    border: solid 3px rgb(11, 143, 0);
+    background: white;
+}

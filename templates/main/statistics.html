@@ -1,0 +1,136 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+    <button id="downloadPdfBtn" style="display: block; margin: auto; margin-top: 30px; width: 50%;">Скачать отчёт</button>
+
+    <script>
+        // Add a JavaScript function to handle button click
+        document.getElementById('downloadPdfBtn').addEventListener('click', function () {
+            // Send a request to the Django view to generate and download the PDF report
+            window.location.href = {% url 'pdf_report' %};
+        });
+    </script>
+
+
+    <div class="chart">
+        <div class="chartMenu">
+            <h2>Доля выполненных заданий</h2>
+        </div>
+        <div class="chartCard">
+            <div class="chartBox">
+                <canvas id="myChart1"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+    <script>
+        // setup
+        const data = {
+            labels:  {{ subjs|safe }},
+            datasets: [{
+                label: 'Доля выполненных заданий',
+                data: {{ float_scores|safe }},
+                backgroundColor: [
+                    'rgba(255, 26, 104, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(0, 0, 0, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 26, 104, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(0, 0, 0, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // config
+        const config = {
+            type: 'bar',
+            data,
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        suggestedMax: 1,
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+
+        // render init block
+        const myChart = new Chart(
+            document.getElementById('myChart1'),
+            config
+        );
+    </script>
+
+    <div class="chart">
+        <div class="chartMenu">
+            <h2>Активность сдачи работ за 30 дней</h2>
+        </div>
+        <div class="chartCard">
+            <div class="chartBox">
+                <canvas id="myChart2"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+    <script>
+        // setup
+        const data2 = {
+            labels:  {{ dates|safe }},
+            datasets: [{
+                label: 'Сдано работ',
+                data: {{ counts|safe }},
+                borderWidth: 1
+            }]
+        };
+
+        // config
+        const config2 = {
+            type: 'line',
+            data: data2,
+            options: {
+                scales: {
+                    y: {
+                        suggestedMax: 4,
+                        ticks: {
+                            beginAtZero: true,
+                            callback: function (value) {
+                                if (value % 1 === 0) {
+                                    return value;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        // render init block
+        const myChart1 = new Chart(
+            document.getElementById('myChart2'),
+            config2
+        );
+
+    </script>
+
+
+{% endblock %}

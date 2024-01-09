@@ -7,7 +7,7 @@ from operator import itemgetter
 from django.apps import apps
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, F
+from django.db.models import Count, F, Sum
 from django.db.models.functions import TruncDay
 from django.http import FileResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -17,6 +17,7 @@ from reportlab.lib.units import inch
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 
 # Local Imports
 from .forms import SignupForm, LoginForm, SubjectForm, AssignmentForm, EventForm, OnlineCourseForm
@@ -29,13 +30,58 @@ pdfmetrics.registerFont(TTFont('DejaVuSans', 'DejaVuSans.ttf'))
 def generate_report(request):
     buf = io.BytesIO()
     c = canvas.Canvas(buf, pagesize=letter, bottomup=0)
-    text_object = c.beginText()
-    text_object.setTextOrigin(inch, inch)
+    text_object = c.beginText(165, 60)
+    # text_object.setTextOrigin(inch, inch)
     text_object.setFont("DejaVuSans", 14)  # Use the registered font
 
-    lines = [
-        f"Количетсво сданных заданий: {Assignments.objects.filter(subject__user=request.user, status__name='Сдано').count()}/{Assignments.objects.filter(subject__user=request.user).count()}",
-    ]
+    lines = []
+    # lines.append(
+    #     f"Количество сданных заданий: {Assignments.objects.filter(subject__user=request.user, status__name='Сдано').count()}/{Assignments.objects.filter(subject__user=request.user).count()}")
+
+    closed_subjects_count = sum(1 for subject in Subjects.objects.filter(user=request.user) if
+                                calculate_score(subject) >= (subject.min_score_for_5 or 0))
+    total_subjects_count = Subjects.objects.filter(user=request.user).count()
+    lines.append(f"Количество закрытых предметов: {closed_subjects_count}/{total_subjects_count}")
+
+    closest_assignments = Assignments.objects.filter(subject__user=request.user, status__name='Не сдано').order_by(
+        'due_date')
+    subjects = Subjects.objects.filter(user=request.user)
+
+    subjects_with_assignments = get_subjects_with_or_without_assignments(request.user)
+    data = ([
+                ['Итого:',
+                 f'{Assignments.objects.filter(subject__user=request.user, status__name="Сдано").count()}/{Assignments.objects.filter(subject__user=request.user).count()}',
+                 ]
+            ]
+            + [
+                [
+                    s['subject_name'],
+                    s['assignments'] or '-',
+                    s['score'] or '-',
+                    s['assignment_name'] or '-',
+                    s['deadline'] or '-'
+                ] for s in subjects_with_assignments]
+            + [['Предмет', 'Работы', 'Баллы', 'Ближайшая работа', 'Дней до дедлайна']])
+    table = Table(data)
+
+    # Add a TableStyle if desired
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, -1), (-1, -1), '#d3d3d3'),
+        # ('TEXTCOLOR', (0, 0), (-1, 0), '#ffffff'),
+
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),  # Add this line
+        ('FONTNAME', (0, 0), (-1, -1), 'DejaVuSans'),
+        # ('FONTSIZE', (0, 0), (-1, 0), 14),
+
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 24),
+        # ('BACKGROUND', (0, 1), (-1, -1), '#ffffff'),
+        ('GRID', (0, 0), (-1, -1), 1, '#000000'),
+    ]))
+
+    # Add the Table to the canvas
+    table.wrapOn(c, 200, 200)
+    table.drawOn(c, 35, 100)
 
     for line in lines:
         text_object.textLine(line)
@@ -49,9 +95,10 @@ def generate_report(request):
 
 
 def calculate_score(subject):
-    assignments = Assignments.objects.filter(subject=subject, status__name='Сдано', score__isnull=False)
-    total_score = sum(assignment.score for assignment in assignments)
-    return total_score
+    return \
+            Assignments.objects.filter(subject=subject, status__name='Сдано', score__isnull=False).aggregate(
+                Sum('score'))[
+                'score__sum'] or 0
 
 
 def get_last_30_days_data(user):
@@ -82,6 +129,14 @@ def home(request):
     context['objects'] = sort_objects(obj_list)
     context['dates'], context['counts'] = get_last_30_days_data(request.user)
     return render(request, 'main/home.html', context)
+
+
+@login_required(login_url='login')
+def statistics(request):
+    context = {'user': request.user}
+    context['subjs'], context['float_scores'], subjects_with_assignments = get_subjects_and_scores(request.user)
+    context['dates'], context['counts'] = get_last_30_days_data(request.user)
+    return render(request, 'main/statistics.html', context)
 
 
 def get_subjects_and_scores(user):
@@ -151,10 +206,16 @@ def sort_objects(obj_list):
     return sorted(obj_list, key=lambda x: get_sort_key(x))
 
 
+@login_required(login_url='login')
 def university(request):
-    subjects_with_assignments = []
-    subjects = Subjects.objects.filter(user=request.user)
+    subjects_with_or_without_assignments = get_subjects_with_or_without_assignments(request.user)
+    context = {'user': request.user, 'subjects_with_assignments': subjects_with_or_without_assignments}
+    return render(request, 'main/university.html', context)
 
+
+def get_subjects_with_or_without_assignments(user):
+    subjects_with_assignments = []
+    subjects = Subjects.objects.filter(user=user)
     for subject in subjects:
         next_assignment = Assignments.objects.filter(subject=subject, status=1).order_by(  # 1 is "Not Done"
             'due_date').first()
@@ -188,16 +249,16 @@ def university(request):
                 'subject_link': f"/subject/{subject.id}",
             }
         subjects_with_assignments.append(subject_with_assignment)
-
-    context = {'user': request.user, 'subjects_with_assignments': subjects_with_assignments}
-    return render(request, 'main/university.html', context)
+    return subjects_with_assignments
 
 
+@login_required(login_url='login')
 def events(request):
     context = {'user': request.user, 'events': get_events(request.user)}
     return render(request, 'main/events.html', context)
 
 
+@login_required(login_url='login')
 def courses(request):
     return render(request, 'main/courses.html',
                   {'user': request.user, 'courses': OnlineCourses.objects.filter(user=request.user)})
@@ -237,6 +298,7 @@ def user_logout(request):
     return redirect('login')
 
 
+@login_required(login_url='login')
 def add_subject(request):
     if request.method == 'POST':
         form = SubjectForm(request.POST)
@@ -251,6 +313,7 @@ def add_subject(request):
     return render(request, 'main/add_subject.html', {'form': form})
 
 
+@login_required(login_url='login')
 def add_assignment(request):
     if request.method == 'POST':
         form = AssignmentForm(request.POST, user=request.user)
@@ -273,6 +336,7 @@ def add_assignment(request):
     return render(request, 'main/add_assignment.html', {'form': form})
 
 
+@login_required(login_url='login')
 def display_subject(request, subject_id):
     subject = Subjects.objects.get(id=subject_id)
     if request.method == 'POST':
@@ -298,6 +362,7 @@ def display_subject(request, subject_id):
     return render(request, 'main/display_subject.html', context)
 
 
+@login_required(login_url='login')
 def display_assignment(request, subject_id, assignment_id):
     subject = Subjects.objects.get(id=subject_id)
     assignment = Assignments.objects.get(id=assignment_id)
@@ -320,6 +385,7 @@ def display_assignment(request, subject_id, assignment_id):
     return render(request, 'main/display_assignment.html', context)
 
 
+@login_required(login_url='login')
 def add_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
@@ -334,6 +400,7 @@ def add_event(request):
     return render(request, 'main/add_event.html', {'form': form})
 
 
+@login_required(login_url='login')
 def add_course(request):
     if request.method == 'POST':
         form = OnlineCourseForm(request.POST)
@@ -354,6 +421,7 @@ def get_model_object(app_label, model_name, obj_id):
     return obj
 
 
+@login_required(login_url='login')
 def delete_object(request, model_name, obj_id):
     app_label = 'main'
     obj = get_model_object(app_label, model_name, obj_id)
@@ -361,6 +429,7 @@ def delete_object(request, model_name, obj_id):
     return redirect(request.GET.get('next'))
 
 
+@login_required(login_url='login')
 def fulfill_task(request, model_name, obj_id):
     app_label = 'main'
     obj = get_model_object(app_label, model_name, obj_id)

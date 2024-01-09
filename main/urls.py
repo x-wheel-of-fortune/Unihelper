@@ -17,5 +17,6 @@ urlpatterns = [
     path('subject/<int:subject_id>/assignment/<int:assignment_id>', views.display_assignment, name='display_assignment'),
     path('delete/<str:model_name>/<int:obj_id>/', views.delete_object, name='delete_object'),
     path('fulfill/<str:model_name>/<int:obj_id>/', views.fulfill_task, name='fulfill_task'),
-    path('pdf_report/', views.generate_report, name='pdf_report')
+    path('pdf_report/', views.generate_report, name='pdf_report'),
+    path('statistics/', views.statistics, name='statistics'),
 ]
