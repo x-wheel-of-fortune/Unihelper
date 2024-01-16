@@ -3,17 +3,57 @@ from .models import Subjects, ClassSessions, ClassSessionTypes, Assignments, Ass
     EventTypes, Exams, OnlineCourses
 @admin.register(Subjects)
 class SubjectsAdmin(admin.ModelAdmin):
-    ordering = ["user"]
+    ordering = ["subject_name"]
     search_fields = ["subject_name"]
 
-# Register your models here.
-admin.site.register(ClassSessions)
-admin.site.register(ClassSessionTypes)
-admin.site.register(Assignments)
-admin.site.register(AssignmentTypes)
-admin.site.register(TaskStatuses)
-admin.site.register(Events)
-admin.site.register(EventTypes)
-admin.site.register(Exams)
-admin.site.register(OnlineCourses)
+
+@admin.register(ClassSessions)
+class ClassSessionsAdmin(admin.ModelAdmin):
+    ordering = ["class_session_datetime"]
+    search_fields = ["subject__subject_name"]
+
+@admin.register(ClassSessionTypes)
+class ClassSessionTypesAdmin(admin.ModelAdmin):
+    ordering = ["name"]
+    search_fields = ["name"]
+
+
+@admin.register(Assignments)
+class AssignmentsAdmin(admin.ModelAdmin):
+    ordering = ["subject__subject_name"]
+    search_fields = ["subject__subject_name"]
+    list_filter = ["status__name"]
+
+@admin.register(AssignmentTypes)
+class AssignmentTypesAdmin(admin.ModelAdmin):
+    ordering = ["name"]
+    search_fields = ["name"]
+
+@admin.register(Events)
+class EventsAdmin(admin.ModelAdmin):
+    ordering = ["name"]
+    search_fields = ["name"]
+    list_filter = ["status__name"]
+
+@admin.register(TaskStatuses)
+class TaskStatusesAdmin(admin.ModelAdmin):
+    ordering = ["name"]
+    search_fields = ["name"]
+
+@admin.register(EventTypes)
+class EventTypesAdmin(admin.ModelAdmin):
+    ordering = ["name"]
+    search_fields = ["name"]
+
+@admin.register(Exams)
+class ExamsAdmin(admin.ModelAdmin):
+    ordering = ["subject__subject_name"]
+    search_fields = ["subject__subject_name"]
+
+@admin.register(OnlineCourses)
+class OnlineCoursesAdmin(admin.ModelAdmin):
+    ordering = ["name"]
+    search_fields = ["name"]
+    list_filter = ["status__name"]
+
 

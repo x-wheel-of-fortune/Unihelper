@@ -67,6 +67,8 @@ class ClassSessions(models.Model):
     class_session_datetime = models.DateTimeField(blank=False)
     score = models.IntegerField(blank=True, null=True)
 
+    def __str__(self):
+        return self.subject.subject_name + ' ' + self.class_session_type.name + ' ' + str(self.class_session_datetime)
     class Meta:
         managed = False
         db_table = 'class_sessions'

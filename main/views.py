@@ -124,7 +124,7 @@ def get_last_30_days_data(user):
 def home(request):
     context = {'user': request.user}
     context['subjs'], context['float_scores'], subjects_with_assignments = get_subjects_and_scores(request.user)
-    events = get_events(request.user)
+    events = [event for event in get_events(request.user) if event['end'] and event['end'] > 0]
     obj_list = subjects_with_assignments + events
     context['objects'] = sort_objects(obj_list)
     context['dates'], context['counts'] = get_last_30_days_data(request.user)

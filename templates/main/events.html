@@ -38,7 +38,7 @@
                     <h3>Приз: {{ event.prize }}</h3>
                 {% endif %}
 
-                {% if event.start %}
+                {% if event.start and event.start >= 0 %}
                     {% if event.start == 0 %}
                         <h3>Начало: <span style="color: red;">сегодня</span></h3>
                     {% elif event.start == 1 %}
@@ -62,8 +62,6 @@
                     {% else %}
                         <h3>Окончание: <span style="color: limegreen;">{{ event.end }} дней</span></h3>
                     {% endif %}
-                {% else %}
-                    <h3>Завершено</h3>
                 {% endif %}
 
 
