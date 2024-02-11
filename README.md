@@ -5,7 +5,7 @@ This application is aimed for making an IT student's life a little bit easier an
 ## Installation guide
 
 1. Clone the repository
-2. Cd to `/unihelper/`
+2. Cd to `/Unihelper/`
 3. Run `pip install -r requrements.txt`
 4. Run `python manage.py makemigrations`
 5. Run `python manage.py migrate`
