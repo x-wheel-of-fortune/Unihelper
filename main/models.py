@@ -3,7 +3,7 @@
 #   * Rearrange models' order
 #   * Make sure each model has one field with primary_key=True
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+#   * Remove `` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 from django.contrib.auth.models import User
@@ -13,7 +13,7 @@ class TaskStatuses(models.Model):
     name = models.CharField(blank=False)
 
     class Meta:
-        managed = False
+        
         db_table = 'task_statuses'
 
     def __str__(self):
@@ -27,7 +27,7 @@ class AssignmentTypes(models.Model):
         return self.name
 
     class Meta:
-        managed = False
+        
         db_table = 'assignment_types'
 
 
@@ -43,7 +43,7 @@ class Assignments(models.Model):
     local_id = models.IntegerField(blank=False)
 
     class Meta:
-        managed = False
+        
         db_table = 'assignments'
 
     def __str__(self):
@@ -57,7 +57,7 @@ class ClassSessionTypes(models.Model):
         return self.name
 
     class Meta:
-        managed = False
+        
         db_table = 'class_session_types'
 
 
@@ -70,7 +70,7 @@ class ClassSessions(models.Model):
     def __str__(self):
         return self.subject.subject_name + ' ' + self.class_session_type.name + ' ' + str(self.class_session_datetime)
     class Meta:
-        managed = False
+        
         db_table = 'class_sessions'
 
 
@@ -81,7 +81,7 @@ class EventTypes(models.Model):
         return self.name
 
     class Meta:
-        managed = False
+        
         db_table = 'event_types'
 
 
@@ -103,7 +103,7 @@ class Events(models.Model):
         return self.name if self.name else self.event_type.name + ' ' + (str(self.start) if self.start else '')
 
     class Meta:
-        managed = False
+        
         db_table = 'events'
 
 
@@ -117,7 +117,7 @@ class Exams(models.Model):
         return self.subject.subject_name + ' экзамен'
 
     class Meta:
-        managed = False
+        
         db_table = 'exams'
 
 
@@ -132,7 +132,7 @@ class OnlineCourses(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        managed = False
+        
         db_table = 'online_courses'
 
 
@@ -149,5 +149,5 @@ class Subjects(models.Model):
         return self.subject_name
 
     class Meta:
-        managed = False
+        
         db_table = 'subjects'

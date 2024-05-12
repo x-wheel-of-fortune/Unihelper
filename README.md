@@ -6,12 +6,8 @@ This application is aimed for making an IT student's life a little bit easier an
 
 1. Clone the repository
 2. Cd to `/Unihelper/`
-3. Run `pip install -r requrements.txt`
-4. Run `python manage.py makemigrations`
-5. Run `python manage.py migrate`
-6. Run `python manage.py collectstatic`
-7. Run `python manage.py runserver`
-8. Open http://127.0.0.1:8000/
+3. Run `make up`
+4. Open http://127.0.0.1:8000/
 
 ## Overview
 

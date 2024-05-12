@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: unihelper
+      POSTGRES_USER: uni
+      POSTGRES_PASSWORD: uni
+      PGPORT: 5431
+    ports:
+      - "5431:5431"
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+

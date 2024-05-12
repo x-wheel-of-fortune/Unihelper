@@ -145,7 +145,7 @@ form {
     flex-direction: column;
     align-items: center;
     width: 60%;
-    max-width: 400px; /* Adjust the maximum width as needed */
+    max-width: 600px; /* Adjust the maximum width as needed */
     background-color: #f8f9fa; /* Bootstrap-like background color */
     border: 1px solid #dee2e6; /* Bootstrap-like border */
     border-radius: 10px;
